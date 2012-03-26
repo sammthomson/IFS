@@ -1,0 +1,11 @@
+.cache
+target/
+
+# Eclipse cruft
+.classpath
+.project
+.settings/
+
+# Emacs cruft
+*~
+
