@@ -7,7 +7,7 @@ import java.awt.{Color, Graphics2D, Polygon, Shape, BasicStroke, AlphaComposite}
 import java.awt.geom.{AffineTransform, Rectangle2D, GeneralPath, Point2D}
 
 /**
- * Makes working with `Point2D`s as easy as working with tuples
+ * Wrapper around `Point2D`s
  */
 case class Point(x: Double, y: Double) {
   def +(other: Point) = Point(x + other.x, y + other.y)
@@ -17,10 +17,6 @@ case class Point(x: Double, y: Double) {
 object Point {
   implicit def point2dToPoint(p: Point2D): Point = Point(p.getX(), p.getY())
   implicit def pointToPoint2d(p: Point): Point2D = new Point2D.Double(p.x, p.y)
-  implicit def tupleToPoint[T <% Double, U <% Double](p: (T, U)): Point = {
-    Point(p._1, p._2)
-  }
-  implicit def pointToTuple(p: Point): (Double, Double) = (p.x, p.y)
 }
 
 
@@ -58,7 +54,9 @@ abstract class Handle(parent: Affine, center: Point, color: Color) {
 }
 
 /**
- * Wrapper around AffineTransform, with methods for display and interaction
+ * Wrapper around AffineTransform, with methods for display and interaction.
+ * Displays as a parallelogram, with handles at three vertices with which you
+ * can move it around.
  */
 class Affine(t: AffineTransform) {
   /** Convenient constructor */
@@ -73,14 +71,13 @@ class Affine(t: AffineTransform) {
   private var _t = t
 
   /** Views on the locations of the three vertices */
-  def origin = this.times(0, 0)
-  def iHat = this.times(1, 0)
-  def jHat = this.times(0, 1)
+  def origin = this.times(Point(0, 0))
+  def iHat = this.times(Point(1, 0))
+  def jHat = this.times(Point(0, 1))
 
   /**
    * Handles for our three vertices.
-   * TODO: These get recreated every time they're accessed, which is maybe
-   * inefficient
+   * NB: These get recreated every time they're accessed
    */
   def originHandle = new Handle(this, origin, Color.BLUE) {
     // Moves just the blue handle

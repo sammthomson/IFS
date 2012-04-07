@@ -3,24 +3,13 @@
  */
 package com.samthomson.ifs
 
+import java.awt.{BasicStroke, Color, Graphics2D, RenderingHints}
 import java.awt.geom.Rectangle2D
-import java.awt.BasicStroke
-import java.awt.Color
-import java.awt.Graphics2D
-import java.awt.RenderingHints
+import scala.swing.{MainFrame, Orientation, Panel, SimpleSwingApplication,
+    SplitPane, BoxPanel, Button}
+import scala.swing.event.{KeyTyped, MouseDragged, MousePressed, MouseReleased,
+    ButtonClicked}
 import scala.swing.Swing.pair2Dimension
-import scala.swing.event.KeyTyped
-import scala.swing.event.MouseDragged
-import scala.swing.event.MousePressed
-import scala.swing.event.MouseReleased
-import scala.swing.MainFrame
-import scala.swing.Orientation
-import scala.swing.Panel
-import scala.swing.SimpleSwingApplication
-import scala.swing.SplitPane
-import scala.swing.BoxPanel
-import scala.swing.Button
-import scala.swing.event.ButtonClicked
 import com.samthomson.ifs.Point.point2dToPoint
 
 

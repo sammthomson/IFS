@@ -54,7 +54,7 @@ class IFS() {
       // real thing
       for(i <- 1 to iterations) {
         p = takeStep(p)
-        g.draw(new Rectangle2D.Double(p._1, p._2,
+        g.draw(new Rectangle2D.Double(p.x, p.y,
                                       size, size))
       }
     }
