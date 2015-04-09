@@ -3,7 +3,7 @@
  */
 package com.samthomson.ifs
 
-import java.awt.{BasicStroke, Color, Graphics2D, RenderingHints}
+import java.awt._
 import java.awt.geom.Rectangle2D
 import scala.swing.{MainFrame, Orientation, Panel, SimpleSwingApplication,
     SplitPane, BoxPanel, Button}
@@ -11,6 +11,7 @@ import scala.swing.event.{KeyTyped, MouseDragged, MousePressed, MouseReleased,
     ButtonClicked}
 import scala.swing.Swing.pair2Dimension
 import com.samthomson.ifs.Point.point2dToPoint
+import scala.Some
 
 
 /* Configs for converting from user space to screen space */
@@ -18,7 +19,7 @@ object Screen {
   val width = 600
   val height = 600
   // how big should the unit square be
-  val scale = Math.min(width, height) * .5
+  val scale = math.min(width, height) * .5
   // position the unit square in the middle of the screen
   val transform = new Affine(scale,        0,
                              0,            - scale,
@@ -56,9 +57,9 @@ object IfsApplication extends SimpleSwingApplication {
     focusable = true
 
     // Rendering specific to the implementing subclass
-    def paintHelper(g: Graphics2D): Unit;
+    def paintHelper(g: Graphics2D)
 
-    override def paintComponent(g: Graphics2D) = {
+    override def paintComponent(g: Graphics2D) {
       super.paintComponent(g)
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON)
@@ -77,7 +78,9 @@ object IfsApplication extends SimpleSwingApplication {
 
   /* The editing panel */
   val editor = new DisplayPanel {
-    def paintHelper(g: Graphics2D): Unit = ifs.paintEditor(g)
+    def paintHelper(g: Graphics2D) {
+      ifs.paintEditor(g)
+    }
     /*
      * Event Handling
      */
@@ -109,7 +112,9 @@ object IfsApplication extends SimpleSwingApplication {
 
   /* The preview panel */
   val preview = new DisplayPanel {
-    def paintHelper(g: Graphics2D) = ifs.paintPreview(g)
+    def paintHelper(g: Graphics2D) {
+      ifs.paintPreview(g)
+    }
   }
 
   /* Repaint both panels */

@@ -3,8 +3,8 @@
  */
 package com.samthomson.ifs
 
-import java.awt.{Color, Graphics2D, Polygon, Shape, BasicStroke, AlphaComposite}
-import java.awt.geom.{AffineTransform, Rectangle2D, GeneralPath, Point2D}
+import java.awt.{Color, Graphics2D, AlphaComposite}
+import java.awt.geom.{AffineTransform, Rectangle2D, Point2D}
 
 /**
  * Wrapper around `Point2D`s
@@ -15,7 +15,7 @@ case class Point(x: Double, y: Double) {
 }
 
 object Point {
-  implicit def point2dToPoint(p: Point2D): Point = Point(p.getX(), p.getY())
+  implicit def point2dToPoint(p: Point2D): Point = Point(p.getX, p.getY)
   implicit def pointToPoint2d(p: Point): Point2D = new Point2D.Double(p.x, p.y)
 }
 
@@ -24,7 +24,7 @@ object Point {
  * Something you can grab onto and move a vertex of an affine
  */
 abstract class Handle(parent: Affine, center: Point, color: Color) {
-    val size = .025;
+    val size = .025
     var _center = center
     val _parent = parent
 
@@ -37,12 +37,12 @@ abstract class Handle(parent: Affine, center: Point, color: Color) {
     }
 
     /** Hook so that each handle can manipulate its affine in a different way */
-    def moveToHelper(p: Point): Unit;
+    def moveToHelper(p: Point)
 
-    /**
+  /**
      * Moves this handle to given location. Calls the `moveToHelper` callback
      */
-    def moveTo(p: Point) = {
+    def moveTo(p: Point) {
       _center = p
       moveToHelper(p)
     }
@@ -67,8 +67,9 @@ class Affine(t: AffineTransform) {
                              j_x, j_y,
                              t_x, t_y))
   }
+
   /* The source of truth for this transform */
-  private var _t = t
+  private val _t = t
 
   /** Views on the locations of the three vertices */
   def origin = this.times(Point(0, 0))
@@ -84,16 +85,20 @@ class Affine(t: AffineTransform) {
     //def moveToHelper(p: Point) = setTransform(iHat, jHat, p)
 
     /* Moves the whole affine */
-    def moveToHelper(p: Point) = {
+    def moveToHelper(p: Point) {
       val delta = p - origin
       setTransform(iHat + delta, jHat + delta, p)
     }
   }
   def iHandle = new Handle(this, iHat, Color.RED) {
-    def moveToHelper(p: Point) = setTransform(p, jHat, origin)
+    def moveToHelper(p: Point) {
+      setTransform(p, jHat, origin)
+    }
   }
   def jHandle = new Handle(this, jHat, Color.GREEN) {
-    def moveToHelper(p: Point) = setTransform(iHat, p, origin)
+    def moveToHelper(p: Point) {
+      setTransform(iHat, p, origin)
+    }
   }
 
   /** Finds which (if any) handle contains the given point (in user space) */
@@ -106,9 +111,9 @@ class Affine(t: AffineTransform) {
   private val aff = this
   /** the filled in shape with which we represent this affine */
   def parallelogram = new Rectangle2D.Double(0, 0, 1, 1) {
-    def paint(g: Graphics2D) = {
-      val oldTransform = g.getTransform()
-      val oldComposite = g.getComposite()
+    def paint(g: Graphics2D) {
+      val oldTransform = g.getTransform
+      val oldComposite = g.getComposite
       g.transform(aff)
       g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .5f))
       g.setColor(Color.lightGray)
@@ -125,14 +130,14 @@ class Affine(t: AffineTransform) {
   /**
    * Sets this affine by specifying the locations of each of the three vertices
    */
-  def setTransform(i: Point, j: Point, t: Point) = {
+  def setTransform(i: Point, j: Point, t: Point) {
     _t.setTransform(i.x - t.x, i.y - t.y,
                     j.x - t.x, j.y - t.y,
                     t.x,       t.y)
   }
 
   /** Paints the filled-in parallelogram and the three handles */
-  def paint(g: Graphics2D) = {
+  def paint(g: Graphics2D) {
     parallelogram.paint(g)
     originHandle.paint(g)
     iHandle.paint(g)
